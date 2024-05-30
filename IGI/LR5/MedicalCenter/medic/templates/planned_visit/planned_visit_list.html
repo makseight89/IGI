@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Planned Visit List{% endblock title %}
+{% block content%}
+    <h1>Planned Visit List</h1>
+    <ul>
+        {% for planned_visit in planned_visits %}
+        <li><a href="{% url 'planned_visit_detail' planned_visit.pk %}">{{ planned_visit.doctor.name }} - {{ planned_visit.date }}</a></li>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'planned_visit_create' %}" method="get" style="display: inline;">
+        <button type="submit">Create</button>
+    </form>
+{% endblock content %}

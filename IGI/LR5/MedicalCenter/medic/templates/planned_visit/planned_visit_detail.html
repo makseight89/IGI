@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Planned Visit Detail{% endblock title %}
+{% block content%}
+    <h1>Planned Visit Detail</h1>
+    <p>Client: {{ planned_visit.client.name }}</p>
+    <p>Doctor: {{ planned_visit.doctor.name }}</p>
+    <p>Date: {{ planned_visit.date }}</p>
+    <p>Start time: {{ planned_visit.start_time }}</p>
+    <p>End time: {{ planned_visit.end_time }}</p>
+
+    <form action="{% url 'planned_visit_update' planned_visit.pk %}" method="get" style="display: inline;">
+        <button type="submit">Update</button>
+    </form>
+
+    <form action="{% url 'planned_visit_delete' planned_visit.pk %}" method="get" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+{% endblock content %}

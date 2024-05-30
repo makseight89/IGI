@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Delete Favor{% endblock title %}
+{% block content%}
+    <h1>Delete Favor</h1>
+    <p>Are you sure you want to delete {{ favor.description }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Delete">
+    </form>
+{% endblock content %}

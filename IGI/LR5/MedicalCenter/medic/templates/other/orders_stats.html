@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block title %}Total Cost of Orders by Doctor{% endblock title %}
+{% block content%}
+    <h1>Orders Stats</h1>
+    <img src="data:image/png;base64,{{ plot_data|base64_encode }}" alt="Plot Image">
+{% endblock content %}

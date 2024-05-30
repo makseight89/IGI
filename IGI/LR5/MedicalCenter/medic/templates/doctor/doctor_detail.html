@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Doctor Detail{% endblock title %}
+{% block content%}
+    <h1>Doctor Detail</h1>
+    <p>Name: {{ doctor.name }}</p>
+    <p>Email: {{ doctor.email }}</p>
+    <p>Phone number: {{ doctor.phone_number }}</p>
+    <p>Date of birth: {{ doctor.date_of_birth }}</p>
+    <p>Doctor Category: {{ doctor.doctor_category }}</p>
+    <p>Doctor Specialization: {{ doctor.doctor_specialization }}</p>
+    <p>Doctor Department: {{ doctor.doctor_department }}</p>
+
+    <form action="{% url 'doctor_update' doctor.pk %}" method="get" style="display: inline;">
+        <button type="submit">Update</button>
+    </form>
+
+    <form action="{% url 'doctor_delete' doctor.pk %}" method="get" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+{% endblock content %}

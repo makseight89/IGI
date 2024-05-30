@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Diagnosis Detail{% endblock title %}
+{% block content%}
+    <h1>Diagnosis Detail</h1>
+    <p>Name: {{ diagnosis.name }}</p>
+    <p>Client: {{ diagnosis.client.name }}</p>
+    <p>Doctor: {{ diagnosis.doctor.name }}</p>
+
+    <form action="{% url 'diagnosis_update' diagnosis.pk %}" method="get" style="display: inline;">
+        <button type="submit">Update</button>
+    </form>
+
+    <form action="{% url 'diagnosis_delete' diagnosis.pk %}" method="get" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+{% endblock content %}

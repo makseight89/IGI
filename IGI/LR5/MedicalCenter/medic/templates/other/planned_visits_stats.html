@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Clients Scheduled to Visit{% endblock title %}
+{% block content%}
+    <h1>Clients Scheduled to Visit</h1>
+    <form method="GET" action="">
+        <label for="doctor">Select Doctor:</label>
+        <select name="doctor" id="doctor">
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.name }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="visit_date">Select Visit Date:</label>
+        <input type="date" name="visit_date" id="visit_date">
+        <br><br>
+        <input type="submit" value="Get Clients">
+    </form>
+    <hr>
+    {% if clients %}
+        <h2>Clients Scheduled to Visit {{ doctor.name }} on {{ visit_date }}</h2>
+        <ul>
+            {% for client in clients %}
+                <li>{{ client.name }}</li>
+            {% empty %}
+                <li>No clients scheduled for this date.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock content %}

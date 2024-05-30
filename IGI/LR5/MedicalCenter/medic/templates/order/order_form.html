@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{% if form.instance.pk %}Update Order{% else %}Create Order{% endif %}{% endblock title %}
+{% block content%}
+    <h1>{% if form.instance.pk %}Update Order{% else %}Create Order{% endif %}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h2>Favors</h2>
+        {% for favor in all_favors %}
+        <div>
+            <input type="checkbox" name="favors" value="{{ favor.pk }}"> {{ favor.description }} ({{ favor.price }})
+            <input type="number" name="quantity_{{ favor.pk }}" min="0">
+        </div>
+        {% endfor %}
+        <input type="submit" value="Save">
+    </form>
+{% endblock content %}

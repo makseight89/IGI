@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Diagnosis List{% endblock title %}
+{% block content%}
+    <h1>Diagnosis List</h1>
+    <ul>
+        {% for diagnosis in diagnoses %}
+        <li><a href="{% url 'diagnosis_detail' diagnosis.pk %}">{{ diagnosis.name }} - {{ diagnosis.client.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'diagnosis_create' %}" method="get" style="display: inline;">
+        <button type="submit">Create</button>
+    </form>
+{% endblock content %}
