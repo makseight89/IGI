@@ -1,72 +1,59 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
-from ..models import Favor
-from ..forms import FavorForm
-from ..utils.date_utils import get_favor_time
-from ..decorator import role_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Doctor
+from .forms import DoctorForm
+from .decorators import role_required
 
 
-@role_required("client")
-def favor_list(request):
-    search_term = request.GET.get("search")
-    sort_order = request.GET.get("sort")
-
-    favors = Favor.objects.all()
-
-    if search_term:
-        favors = favors.filter(Q(description__icontains=search_term))
-
-    if sort_order == "ascending":
-        favors = favors.order_by("price")
-    elif sort_order == "descending":
-        favors = favors.order_by("-price")
-
-    return render(request, "favor/favor_list.html", {"favors": favors})
+@login_required
+def doctor_list(request):
+    if request.user.is_doctor:
+        doctors = Doctor.objects.all()
+        return render(request, "doctor/doctor_list.html", {"doctors": doctors})
+    else:
+        return redirect("home")
 
 
-@role_required("client")
-def favor_detail(request, pk):
-    favor = get_object_or_404(Favor, pk=pk)
-    created_tz, updated_tz, created_utc, updated_utc = get_favor_time(favor)
-    context = {
-        "favor": favor,
-        "created_tz": created_tz,
-        "updated_tz": updated_tz,
-        "created_utc": created_utc,
-        "updated_utc": updated_utc,
-    }
-    return render(request, "favor/favor_detail.html", context)
+@login_required
+def doctor_detail(request, pk):
+    if request.user.is_doctor:
+        doctor = get_object_or_404(Doctor, pk=pk)
+        return render(request, "doctor/doctor_detail.html", {"doctor": doctor})
+    else:
+        return redirect("home")
 
 
 @role_required("doctor")
-def favor_create(request):
+def doctor_create(request):
     if request.method == "POST":
-        form = FavorForm(request.POST)
+        form = DoctorForm(request.POST)
+        if form.is_valid():
+            doctor = form.save(commit=False)
+            doctor.user = request.user
+            doctor.save()
+            return redirect("doctor_list")
+    else:
+        form = DoctorForm()
+    return render(request, "doctor/doctor_form.html", {"form": form})
+
+
+@role_required("doctor")
+def doctor_update(request, pk):
+    doctor = get_object_or_404(Doctor, pk=pk, user=request.user)
+    if request.method == "POST":
+        form = DoctorForm(request.POST, instance=doctor)
         if form.is_valid():
             form.save()
-            return redirect("favor_list")
+            return redirect("doctor_list")
     else:
-        form = FavorForm()
-    return render(request, "favor/favor_form.html", {"form": form})
+        form = DoctorForm(instance=doctor)
+    return render(request, "doctor/doctor_form.html", {"form": form})
 
 
 @role_required("doctor")
-def favor_update(request, pk):
-    favor = get_object_or_404(Favor, pk=pk)
+def doctor_delete(request, pk):
+    doctor = get_object_or_404(Doctor, pk=pk, user=request.user)
     if request.method == "POST":
-        form = FavorForm(request.POST, instance=favor)
-        if form.is_valid():
-            form.save()
-            return redirect("favor_list")
-    else:
-        form = FavorForm(instance=favor)
-    return render(request, "favor/favor_form.html", {"form": form})
-
-
-@role_required("doctor")
-def favor_delete(request, pk):
-    favor = get_object_or_404(Favor, pk=pk)
-    if request.method == "POST":
-        favor.delete()
-        return redirect("favor_list")
-    return render(request, "favor/favor_confirm_delete.html", {"favor": favor})
+        doctor.delete()
+        return redirect("doctor_list")
+    return render(request, "doctor/doctor_confirm_delete.html", {"doctor": doctor})
